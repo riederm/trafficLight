@@ -1,1 +1,6 @@
 # trafficLight
+
+run with
+```
+make
+```
