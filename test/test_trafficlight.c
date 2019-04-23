@@ -7,18 +7,37 @@ TrafficLight* trafficLight;
 
 void setUp(void) {
    trafficLight = createTrafficLight();
+
 }
 
 void tearDown(void){
    free(trafficLight);
 }
 
-void initiallyTrafficLightIsOff(void)
+void assertTrafficLight(traffic_light_phases expectedState,
+                            bool expectedRed,
+                            bool expectedYellow,
+                            bool expectedGreen){
+    TEST_ASSERT_EQUAL(trafficLight->state, expectedState);
+    TEST_ASSERT_EQUAL(trafficLight->red, expectedRed);
+    TEST_ASSERT_EQUAL(trafficLight->yellow, expectedYellow);
+    TEST_ASSERT_EQUAL(trafficLight->green, expectedGreen);
+}
+
+void initiallyTrafficLightIsRED(void)
 {
-   TEST_ASSERT_FALSE(trafficLight->green)
-   TEST_ASSERT_FALSE(trafficLight->red)
-   TEST_ASSERT_FALSE(trafficLight->yellow)
-   TEST_ASSERT_EQUAL(trafficLight->phase, off);
+    assertTrafficLight(RED, true, false, false);
+}
+
+void itShouldChangeFromREDtoRED_YELLOWAfter10Ticks(){
+    // GIVEN a RED tl
+    trafficLight->state = RED;
+
+    // WHEN 10 ticks happen
+    for(int i=0; i<10; i++) tick(trafficLight);
+
+    // THEN the tl should be RED_YELLOW
+    assertTrafficLight(RED_YELLOW, true, true, false);
 }
 
 
@@ -26,7 +45,9 @@ int main(void)
 {
    UnityBegin("test/test_isogram.c");
 
-   RUN_TEST(initiallyTrafficLightIsOff);
+   RUN_TEST(initiallyTrafficLightIsRED);
+   RUN_TEST(itShouldChangeFromREDtoRED_YELLOWAfter10Ticks);
+
 
    UnityEnd();
 
